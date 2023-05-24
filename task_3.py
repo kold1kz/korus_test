@@ -14,7 +14,7 @@ def calculate_profit(oper_data:tuple, depart_data:tuple):
 
     for entry in oper_data:
         year, month, id, profit = entry
-        key = (year, month, division)
+        key = (year, month, department_id, )
         profits[key] += profit
 
     result = {(year, month, id, profit) for (year, month, division), profit in profits.items()}
@@ -34,6 +34,25 @@ def get_data()->None:
 
     with open('./file3/operations.csv', newline='', encoding='utf-8') as f:
         oper = csv.DictReader(f, delimiter=",")
+        out_reader(oper)
 
 if __name__ == "__main__":
     get_data()
+def process_table_data(table_data):
+    result = set()
+    monthly_profit = {}
+
+    for row in table_data:
+        year = row['year']
+        month = row['month']
+        department_id = row['department_id']
+        income = int(row['income'])
+
+        key = (year, month, department_id)
+        monthly_profit[key] = monthly_profit.get(key, 0) + income
+
+    for key, profit in monthly_profit.items():
+        year, month, department_id = key
+        result.add((year, month, department_id, profit))
+
+    return result
