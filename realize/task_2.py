@@ -1,7 +1,8 @@
 '''task 2'''
 import csv
 
-def max_positive_sequence_length(arr):
+def max_positive_sequence_length(arr:list)->int:
+    '''main func to count max positive sequence'''
     max_len = 0
     curr_len = 0
 
@@ -16,7 +17,7 @@ def max_positive_sequence_length(arr):
 
 
 q=[]
-with open('./file2/numbers.csv', newline='') as csvfile:
+with open('./file2/numbers.csv', newline='', encoding='utf-8') as csvfile:
     reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
     q = [int(row[0]) for row in reader if row[0].lstrip("-").isdigit()]
 

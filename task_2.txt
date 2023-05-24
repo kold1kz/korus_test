@@ -1,7 +1,8 @@
 '''task 2'''
 import csv
 
-def max_positive_sequence_length(arr):
+def max_positive_sequence_length(arr:list)->int:
+'''main func to count max positive sequence'''
     max_len = 0
     curr_len = 0
 
