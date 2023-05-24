@@ -1,0 +1,40 @@
+SELECT "Город издания"
+FROM Книги
+WHERE extract(year from cast("Год издания" as DATE) - INTERVAL '5 years') = 2016
+GROUP BY "Город издания"
+HAVING COUNT(*) = (
+    SELECT COUNT(*)
+    FROM Книги
+    where extract(year from cast("Год издания" as DATE) - INTERVAL '5 years') = 2016
+    GROUP BY "Город издания"
+    ORDER BY COUNT(*) DESC
+    LIMIT 1
+);
+
+SELECT count(*) AS "Количество экземпляров"
+FROM "Книги"
+WHERE "Название" = 'Война и мир' AND "Автор" = 'Л.Н.Толстой'
+--- 0
+
+
+
+
+SELECT r."№ читательского билета", r.Фамилия, r.Имя, r.Отчество, r."Дата рождения", r.Пол, r.Адрес, r.Телефон
+FROM "Читатели" r
+WHERE r."№ читательского билета" IN (
+  SELECT vk."№ читательского билета"
+  FROM "Выдачи книг" vk
+  WHERE CAST(vk."Дата выдачи" AS DATE) >= CURRENT_DATE - INTERVAL '1 month'
+  GROUP BY vk."№ читательского билета"
+  HAVING COUNT(*) > (
+    SELECT COUNT(*)
+    FROM "Выдачи книг" vk2
+    WHERE CAST(vk2."Дата выдачи" AS DATE) >= CURRENT_DATE - INTERVAL '1 month'
+    GROUP BY vk2."№ читательского билета"
+    ORDER BY COUNT(*) DESC
+    LIMIT 1
+  )
+)
+ORDER BY r."Дата рождения" ASC;
+
+--- здесь просто читателей которые брали книги
