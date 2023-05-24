@@ -1,0 +1,57 @@
+"""task 3"""
+import csv
+
+
+def correct_data(day:int, month :int)->bool:
+    '''check correct datas'''
+    return 1 <= month <= 12 and 1 <= day<= 31
+
+def name_return(depart_data:set, id:int)->str:
+    for item in depart_data:
+        if int(item['id']) == id:
+            return item['name']
+    return None
+
+def main_func(oper_data:set, depart_data:set)->set:
+    result = set()
+    monthly_profit = {}
+
+    for row in oper_data:
+        year = row['year']
+        month = int(row['month']) if correct_data(int(row['day']), int(row['month'])) else 0
+        if month == 0:
+            continue
+        department = name_return(depart_data, int(row['department_id']))
+        income = int(row['income'])
+        key = (year, month, department)
+        monthly_profit[key] = monthly_profit.get(key, 0) + income
+
+    for key, profit in monthly_profit.items():
+        year, month, department = key
+        result.add((year, month, department, profit))
+
+    return sorted(result)
+
+
+
+def out_reader(reader: tuple)-> None:
+    '''out data from reader .csv'''
+    for row in reader:
+        print(row)
+
+def get_oper_data()->set:
+    '''get data from oper'''
+    with open('./file3/operations.csv', newline='', encoding='utf-8') as q:
+        return [*csv.DictReader(q, delimiter=",")]
+
+def get_depart_data()->set:
+    '''get data from depart'''
+    with open('./file3/departments.csv', newline='', encoding='utf-8') as f:
+        return [*csv.DictReader(f, delimiter=",")]
+
+if __name__ == "__main__":
+    oper=get_oper_data()
+    depart = get_depart_data()
+    print('year, month, department, income')
+    for i in main_func(oper,depart):
+        print(*i)
